@@ -93,21 +93,6 @@ class Qiubai(object):
 
 
 if __name__ == '__main__':
-	# reponse = requests.get(url, headers = headers)
-	# soup = BeautifulSoup(reponse.content)
-	# # 每一条糗百
-	# for part in soup.find_all(class_ = 'article block untagged mb15'):
-	# 	content = part.find(class_ = 'content')
-	# 	print content.get_text().encode('utf-8')
-	# 	# author
-	# 	author = part.find(class_ = 'author')
-	# 	print author.get_text().encode('utf-8')
-	# 	# vote
-	# 	vote = part.find(class_ = 'number')
-	# 	print  vote.get_text().encode('utf-8')
-
-	# next_url = soup.find(class_='next')
-	# print url + next_url.get('href')
 	q = Qiubai() 
 	q.process()
 
