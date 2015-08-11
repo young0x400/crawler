@@ -22,25 +22,57 @@ class Qiubai(object):
 			根据一段html, 返回一个字典
 		"""
 		item = {}
+		# initial
+		item['content'] = u''	#本条糗百内容
+		item['pubtime'] = u''	#本条糗百发布时间
+		item['author'] = u''		#作者
+		item['vote_num'] = u'' #投票数
+		item['comment_num'] = u'' #评论数
+		item['tag'] = []		 # 标签
+		item['video_src'] = u''  # 视频链接, 无则为空
+		item['img_src'] = u''    # 图片链接, 无则为空
+
 		# content
 		content = part.find(class_ = 'content')
 		if content:
-			item['content'] = content.get_text().encode('utf-8')
-		else:
-			item['content'] = ''
+			item['content'] = content.get_text(strip = True)
+			#publish time
+			item['pubtime'] = content.contents[1]
+
 		# author
 		author = part.find(class_ = 'author')
 		if author:
-			item['author'] = author.get_text().encode('utf-8')
-		else:
-			item['author'] = ''
-		# vote
-		vote = part.find(class_ = 'number')
+			item['author'] = author.get_text(strip = True)
+
+		# vote number
+		vote = part.find(class_ = 'stats-vote')
 		if vote:
-			item['vote'] = vote.get_text().encode('utf-8')
-		else:
-			item['vote'] = ''
+			item['vote_num'] = vote.find(class_ = 'number').string
+
+		# comment number
+		comment = part.find(class_ = 'stats-comments')
+		if comment:
+			item['comment_num'] = comment.find(class_ = 'number').string
+
+		# tag
+		tag = part.find(class_ = 'stats-tag')
+		if tag:
+			item['tag'] = [s for s in tag.stripped_strings]
+		
+		# video
+		video = part.find(class_ = 'video_holder')
+		if video:
+			video_src = video.source
+			item['video_src'] = video_src.get('src')
+
+		# image
+		image = part.find(class_ = 'thumb')
+		if image:
+			img_src = image.img
+			item['img_src'] = img_src.get('src')
+
 		return item
+
 
 	def parse(self, page):
 		"""
@@ -71,9 +103,17 @@ class Qiubai(object):
 		"""
 			打印一条糗百
 		"""
-		print 'content : ', item['content']
 		print 'author : ', item['author']
-		print 'vote : ', item['vote']
+		print 'content : ', item['content']
+		print 'pubtime : ', item['pubtime']
+		print 'vote_num : ', item['vote_num']
+		print 'comment_num : ', item['comment_num']
+		print 'tag : ', ','.join(item['tag'])
+		if item['img_src']:
+			print 'img_src : ', item['img_src']
+		if item['video_src']:
+			print 'video_src : ', item['video_src'] 
+		print ''
 
 	def process(self):
 		"""
